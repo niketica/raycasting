@@ -24,7 +24,7 @@ public class Player implements GameComponent {
 
     public float angle;
     public float speed = 1.8f;
-    public float rot_speed = 1.4f;
+    public float rot_speed = 2.4f;
 
     private int prevMouseX;
     private Robot robot;

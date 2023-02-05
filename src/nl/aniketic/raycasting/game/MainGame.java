@@ -8,11 +8,11 @@ import nl.aniketic.raycasting.math.Vector2f;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.MouseInfo;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainGame implements GameComponent {
 
@@ -28,14 +28,14 @@ public class MainGame implements GameComponent {
     public static final int MAX_DEPTH = 20;
 
     public static final int[][] MAP = {
-            {1, 1, 1, 1, 1, 1, 1, 1},
+            {1, 2, 2, 1, 3, 1, 3, 1},
             {1, 0, 0, 1, 0, 1, 0, 1},
             {1, 0, 0, 1, 0, 0, 0, 1},
             {1, 0, 0, 1, 0, 1, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 1, 1, 0, 1, 0, 1},
+            {1, 0, 4, 4, 0, 1, 0, 1},
             {1, 0, 0, 0, 0, 0, 0, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1}
+            {1, 5, 1, 1, 1, 1, 5, 1}
     };
 
     private Player player;
@@ -46,6 +46,14 @@ public class MainGame implements GameComponent {
     private Texture wallTexture;
     private Texture stoneTexture;
     private Texture skyTexture;
+
+    private Texture grayBrickTexture;
+    private Texture mossyTexture;
+    private Texture faceTexture;
+    private Texture redBrickTexture;
+    private Texture eagleTexture;
+
+    private Map<Integer, Texture> textureMap;
 
     private BufferedImage screenImage;
     private int[] screenPixels;
@@ -60,9 +68,28 @@ public class MainGame implements GameComponent {
         stoneTexture = loadTexture("./res/textures/stone_64x64.png", 1.0f);
         skyTexture = loadTexture("./res/textures/sky.jpg", 3.0f);
 
+        grayBrickTexture = loadTexture("./res/textures/gray_bricks_1024x1024.png");
+        mossyTexture = loadTexture("./res/textures/mossy_bricks_1024x1024.png");
+        faceTexture = loadTexture("./res/textures/face_bricks_1024x1024.png");
+        redBrickTexture = loadTexture("./res/textures/red_bricks_1024x1024.png");
+        eagleTexture = loadTexture("./res/textures/eagle_1024x1024.png");
+
+        textureMap = new HashMap<>();
+        textureMap.put(1, redBrickTexture);
+        textureMap.put(2, mossyTexture);
+        textureMap.put(3, faceTexture);
+        textureMap.put(4, grayBrickTexture);
+        textureMap.put(5, eagleTexture);
+
         screenImage = new BufferedImage(DisplayManager.SCREEN_WIDTH, DisplayManager.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         screenImage.setAccelerationPriority(0); // Just to be sure
         screenPixels = ((DataBufferInt) screenImage.getRaster().getDataBuffer()).getData();
+    }
+
+    private static Texture loadTexture(String filePath) {
+        BufferedImage skyImage = ImageUtil.loadImage(filePath);
+        int[] skyPixels = skyImage.getRGB(0, 0, skyImage.getWidth(), skyImage.getHeight(), null, 0, skyImage.getWidth());
+        return new Texture(skyImage.getWidth(), skyImage.getHeight(), skyPixels);
     }
 
     private static Texture loadTexture(String filePath, float scale) {
@@ -140,7 +167,19 @@ public class MainGame implements GameComponent {
             topOfWall = Math.round((PROJECTION_PLANE_HEIGHT * 0.5f) - (projectedWallHeight * 0.5f));
 
             float shade = MathUtil.map(closestDistance, 0, 400, 0.0f, 1.0f);
-            drawWallSliceRectangle(castColumn, topOfWall, 1, ((bottomOfWall - topOfWall) + 1), shade, xOffset);
+
+            int mapX = (int) Math.floor(closestIntersection.x) / CUBE_SIZE;
+            int mapY = (int) Math.floor(closestIntersection.y) / CUBE_SIZE;
+            if (distanceH < distanceV && castArc > 180.0f) {
+                mapY--;
+            }
+            if (distanceV < distanceH && !(castArc < 90.0f || castArc >= 270.0f)) {
+                mapX--;
+            }
+            Texture texture = textureMap.get(MAP[mapY][mapX]);
+            if (texture == null) texture = checkerTexture_64;
+
+            drawWallSliceRectangle(castColumn, topOfWall, 1, ((bottomOfWall - topOfWall) + 1), shade, xOffset, texture);
             drawFloor(castArc, castColumn, bottomOfWall);
 
             // Increase the arc for the next iteration
@@ -151,8 +190,6 @@ public class MainGame implements GameComponent {
         }
 
         g2.drawImage(screenImage, 0, 0, DisplayManager.SCREEN_WIDTH, DisplayManager.SCREEN_HEIGHT, null);
-
-//        renderMiniMap(g2);
     }
 
     private void drawSky() {
@@ -197,9 +234,9 @@ public class MainGame implements GameComponent {
                     (cellY < MAP.length) &&
                     cellX >= 0 && cellY >= 0) {
                 // Find offset of tile and column in texture
-                float tileRow = (float) (Math.floor(yEnd % CUBE_SIZE)/CUBE_SIZE);
-                float tileColumn = (float) (Math.floor(xEnd % CUBE_SIZE)/CUBE_SIZE);
-                int rgb = checkerTexture_128.getPixel(tileColumn, tileRow);
+                float tileRow = (float) (Math.floor(yEnd % CUBE_SIZE) / CUBE_SIZE);
+                float tileColumn = (float) (Math.floor(xEnd % CUBE_SIZE) / CUBE_SIZE);
+                int rgb = grayBrickTexture.getPixel(tileColumn, tileRow);
 
                 float shade = MathUtil.map(diagonalDistance, 0, 320, 0.0f, 1.0f);
                 Color shadedPixelColor = applyShade(new Color(rgb), shade);
@@ -210,7 +247,7 @@ public class MainGame implements GameComponent {
         }
     }
 
-    private void drawWallSliceRectangle(int x, int y, int width, int height, float shade, int xOffset) {
+    private void drawWallSliceRectangle(int x, int y, int width, int height, float shade, int xOffset, Texture texture) {
         int sx = xOffset;
         int sy;
         for (int worldY = y; worldY < y + height; worldY++) {
@@ -219,7 +256,10 @@ public class MainGame implements GameComponent {
 
             for (int worldX = x; worldX < x + width; worldX++) {
                 if (worldX < 0 || worldX >= PROJECTION_PLANE_WIDTH) continue;
-                int rgb = wallTexture.getPixel(sx, sy);
+
+                float tileRow = (float) sy / (float) CUBE_SIZE;
+                float tileColumn = (float) sx / (float) CUBE_SIZE;
+                int rgb = texture.getPixel(tileColumn, tileRow);
                 Color c = applyShade(new Color(rgb), shade);
                 screenPixels[worldY * PROJECTION_PLANE_WIDTH + worldX] = c.getRGB();
             }
@@ -296,7 +336,6 @@ public class MainGame implements GameComponent {
                 }
             }
         }
-
         return new Vector2f(xIntersection, yIntersection);
     }
 
