@@ -27,15 +27,26 @@ public class MainGame implements GameComponent {
     public static final float ANGLE_BETWEEN_RAYS = (float) FOV / (float) NUMBER_OF_RAYS;
     public static final int MAX_DEPTH = 20;
 
+//    public static final int[][] MAP = {
+//            {1, 2, 2, 1, 3, 1, 3, 1},
+//            {1, 0, 0, 1, 0, 1, 0, 1},
+//            {1, 0, 0, 1, 0, 0, 0, 1},
+//            {1, 0, 0, 1, 0, 1, 0, 1},
+//            {1, 0, 0, 0, 0, 0, 0, 1},
+//            {1, 0, 4, 4, 0, 1, 0, 1},
+//            {1, 0, 0, 0, 0, 0, 0, 1},
+//            {1, 5, 1, 1, 1, 1, 5, 1}
+//    };
+
     public static final int[][] MAP = {
-            {1, 2, 2, 1, 3, 1, 3, 1},
-            {1, 0, 0, 1, 0, 1, 0, 1},
-            {1, 0, 0, 1, 0, 0, 0, 1},
-            {1, 0, 0, 1, 0, 1, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 4, 4, 0, 1, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 1},
-            {1, 5, 1, 1, 1, 1, 5, 1}
+            {1, 2, 2, 1, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1},
+            {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 4, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 5, 1, 1, 1, 1, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1}
     };
 
     private Player player;
@@ -198,7 +209,10 @@ public class MainGame implements GameComponent {
         for (int y=0; y<twilightTexture.getHeight(); y++) {
             for (int x=0; x<DisplayManager.SCREEN_WIDTH; x++) {
                 if (y >= DisplayManager.SCREEN_HEIGHT) break;
-                int tx = x % twilightTexture.getWidth();
+
+                int xOffset = (int) MathUtil.map(player.angle, 0.0f, 359.999f, 0, twilightTexture.getWidth() * 2);
+
+                int tx = (x+xOffset) % twilightTexture.getWidth();
                 int skyPixel = twilightTexture.getPixel(tx, y);
                 screenPixels[y * DisplayManager.SCREEN_WIDTH + x] = skyPixel;
             }
@@ -230,7 +244,7 @@ public class MainGame implements GameComponent {
 
             // Get the tile intersected by ray:
             float cellX = xEnd / CUBE_SIZE;
-            float cellY = xEnd / CUBE_SIZE;
+            float cellY = yEnd / CUBE_SIZE;
 
             //Make sure the tile is within our map
             if ((cellX < MAP[0].length) &&
