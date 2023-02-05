@@ -119,6 +119,24 @@ public class MainGame implements GameComponent {
         if (GameKey.ESCAPE.isPressed()) {
             System.exit(0);
         }
+
+        // Debugging
+        if (GameKey._1.isPressed()) {
+            player.speed += 0.1f;
+            System.out.println("Movement speed up: " + player.speed);
+        }
+        if (GameKey._2.isPressed()) {
+            player.speed -= 0.1f;
+            System.out.println("Movement speed down: " + player.speed);
+        }
+        if (GameKey._3.isPressed()) {
+            player.rot_speed += 0.1f;
+            System.out.println("Look speed up: " + player.rot_speed);
+        }
+        if (GameKey._4.isPressed()) {
+            player.rot_speed -= 0.1f;
+            System.out.println("Look speed down: " + player.rot_speed);
+        }
     }
 
     @Override
@@ -179,7 +197,7 @@ public class MainGame implements GameComponent {
             bottomOfWall++; // Add magic pixel to obscure any rounding errors when drawing the floor textures
             topOfWall = Math.round((PROJECTION_PLANE_HEIGHT * 0.5f) - (projectedWallHeight * 0.5f));
 
-            float shade = MathUtil.map(closestDistance, 0, 400, 0.0f, 1.0f);
+            float shade = MathUtil.map(closestDistance, 0, 400, 0.0f, 0.85f);
 
             int mapX = (int) Math.floor(closestIntersection.x) / CUBE_SIZE;
             int mapY = (int) Math.floor(closestIntersection.y) / CUBE_SIZE;
@@ -250,12 +268,15 @@ public class MainGame implements GameComponent {
             if ((cellX < MAP[0].length) &&
                     (cellY < MAP.length) &&
                     cellX >= 0 && cellY >= 0) {
+                Texture texture = grayBrickTexture;
+                if (Math.floor(cellX)==1 && Math.floor(cellY)==1) texture = checkerTexture_64;
+
                 // Find offset of tile and column in texture
                 float tileRow = (float) (Math.floor(yEnd % CUBE_SIZE) / CUBE_SIZE);
                 float tileColumn = (float) (Math.floor(xEnd % CUBE_SIZE) / CUBE_SIZE);
-                int rgb = grayBrickTexture.getPixel(tileColumn, tileRow);
+                int rgb = texture.getPixel(tileColumn, tileRow);
 
-                float shade = MathUtil.map(diagonalDistance, 0, 320, 0.0f, 1.0f);
+                float shade = MathUtil.map(diagonalDistance, 0, 320, 0.0f, 0.85f);
                 Color shadedPixelColor = applyShade(new Color(rgb), shade);
 
                 int screenPixelIndex = row * PROJECTION_PLANE_WIDTH + castColumn;

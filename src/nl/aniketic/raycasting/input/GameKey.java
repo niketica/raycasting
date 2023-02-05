@@ -12,7 +12,17 @@ public enum GameKey {
     USE(KeyEvent.VK_E),
     ARROW_LEFT(KeyEvent.VK_LEFT),
     ARROW_RIGHT(KeyEvent.VK_RIGHT),
-    ESCAPE(KeyEvent.VK_ESCAPE);
+    ESCAPE(KeyEvent.VK_ESCAPE),
+    _0(KeyEvent.VK_0),
+    _1(KeyEvent.VK_1),
+    _2(KeyEvent.VK_2),
+    _3(KeyEvent.VK_3),
+    _4(KeyEvent.VK_4),
+    _5(KeyEvent.VK_5),
+    _6(KeyEvent.VK_6),
+    _7(KeyEvent.VK_7),
+    _8(KeyEvent.VK_8),
+    _9(KeyEvent.VK_9);
 
     private final int keyCode;
     private boolean pressed;
