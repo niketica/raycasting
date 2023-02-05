@@ -2,11 +2,14 @@ package nl.aniketic.raycasting.game;
 
 import nl.aniketic.raycasting.display.DisplayManager;
 import nl.aniketic.raycasting.engine.GameComponent;
+import nl.aniketic.raycasting.input.GameKey;
 import nl.aniketic.raycasting.math.MathUtil;
 import nl.aniketic.raycasting.math.Vector2f;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.Arrays;
@@ -72,6 +75,10 @@ public class MainGame implements GameComponent {
     @Override
     public void input() {
         player.input();
+
+        if (GameKey.ESCAPE.isPressed()) {
+            System.exit(0);
+        }
     }
 
     @Override
@@ -128,8 +135,9 @@ public class MainGame implements GameComponent {
             }
 
             float projectedWallHeight = (CUBE_SIZE * DISTANCE_TO_PROJECTION_PLANE / dist);
-            bottomOfWall = (int) ((PROJECTION_PLANE_HEIGHT * 0.5f) + (projectedWallHeight * 0.5f));
-            topOfWall = (int) ((PROJECTION_PLANE_HEIGHT * 0.5f) - (projectedWallHeight * 0.5f));
+            bottomOfWall = Math.round((PROJECTION_PLANE_HEIGHT * 0.5f) + (projectedWallHeight * 0.5f));
+            bottomOfWall++; // Add magic pixel to obscure any rounding errors when drawing the floor textures
+            topOfWall = Math.round((PROJECTION_PLANE_HEIGHT * 0.5f) - (projectedWallHeight * 0.5f));
 
             float shade = MathUtil.map(closestDistance, 0, 400, 0.0f, 1.0f);
             drawWallSliceRectangle(castColumn, topOfWall, 1, ((bottomOfWall - topOfWall) + 1), shade, xOffset);

@@ -12,6 +12,8 @@ public class DisplayManager extends JPanel {
     public static final int SCREEN_WIDTH = 1600;
     public static final int SCREEN_HEIGHT = 900;
 
+    public static JFrame WINDOW;
+
     private String title;
     private RenderComponent renderComponent;
 
@@ -33,6 +35,8 @@ public class DisplayManager extends JPanel {
         window.pack();
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+
+        WINDOW = window;
     }
 
     @Override
@@ -44,5 +48,9 @@ public class DisplayManager extends JPanel {
 
     public void render() {
         repaint();
+    }
+
+    public static JFrame getWindow() {
+        return WINDOW;
     }
 }

@@ -11,7 +11,8 @@ public enum GameKey {
     SPACE(KeyEvent.VK_SPACE),
     USE(KeyEvent.VK_E),
     ARROW_LEFT(KeyEvent.VK_LEFT),
-    ARROW_RIGHT(KeyEvent.VK_RIGHT),;
+    ARROW_RIGHT(KeyEvent.VK_RIGHT),
+    ESCAPE(KeyEvent.VK_ESCAPE);
 
     private final int keyCode;
     private boolean pressed;
