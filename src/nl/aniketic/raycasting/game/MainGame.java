@@ -37,7 +37,8 @@ public class MainGame implements GameComponent {
 
     private Player player;
 
-    private Texture checkerTexture;
+    private Texture checkerTexture_64;
+    private Texture checkerTexture_128;
     private Texture checkerDebugTexture;
     private Texture wallTexture;
     private Texture stoneTexture;
@@ -49,7 +50,8 @@ public class MainGame implements GameComponent {
     public MainGame() {
         player = new Player(96.0f, 224.0f);
 
-        checkerTexture = loadTexture("./res/textures/checker_brown_64x64.png", 1.0f);
+        checkerTexture_64 = loadTexture("./res/textures/checker_brown_64x64.png", 1.0f);
+        checkerTexture_128 = loadTexture("./res/textures/checker_brown_128x128.png", 1.0f);
         checkerDebugTexture = loadTexture("./res/textures/checker_brown_debug_64x64.png", 1.0f);
         wallTexture = loadTexture("./res/textures/wall_64x64.png", 1.0f);
         stoneTexture = loadTexture("./res/textures/stone_64x64.png", 1.0f);
@@ -187,10 +189,9 @@ public class MainGame implements GameComponent {
                     (cellY < MAP.length) &&
                     cellX >= 0 && cellY >= 0) {
                 // Find offset of tile and column in texture
-                int tileRow = (int) Math.floor(yEnd % CUBE_SIZE);
-                int tileColumn = (int) Math.floor(xEnd % CUBE_SIZE);
-                int textureIndex = tileRow * 64 + tileColumn;
-                int rgb = stoneTexture.getPixel(textureIndex);
+                float tileRow = (float) (Math.floor(yEnd % CUBE_SIZE)/CUBE_SIZE);
+                float tileColumn = (float) (Math.floor(xEnd % CUBE_SIZE)/CUBE_SIZE);
+                int rgb = checkerTexture_128.getPixel(tileColumn, tileRow);
 
                 float shade = MathUtil.map(diagonalDistance, 0, 320, 0.0f, 1.0f);
                 Color shadedPixelColor = applyShade(new Color(rgb), shade);

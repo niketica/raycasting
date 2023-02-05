@@ -40,6 +40,12 @@ public class Texture {
         return pixels[index];
     }
 
+    public int getPixel(float col, float row) {
+        int x = (int) Math.floor(width * col);
+        int y = (int) Math.floor(height * row);
+        return pixels[y * width + x];
+    }
+
     public void setPixels(int[] pixels) {
         this.pixels = pixels;
     }
