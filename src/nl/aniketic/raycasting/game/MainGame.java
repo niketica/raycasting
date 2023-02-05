@@ -52,6 +52,7 @@ public class MainGame implements GameComponent {
     private Texture faceTexture;
     private Texture redBrickTexture;
     private Texture eagleTexture;
+    private Texture twilightTexture;
 
     private Map<Integer, Texture> textureMap;
 
@@ -73,6 +74,7 @@ public class MainGame implements GameComponent {
         faceTexture = loadTexture("./res/textures/face_bricks_1024x1024.png");
         redBrickTexture = loadTexture("./res/textures/red_bricks_1024x1024.png");
         eagleTexture = loadTexture("./res/textures/eagle_1024x1024.png");
+        twilightTexture = loadTexture("./res/textures/twilight_sky_1200x400.png");
 
         textureMap = new HashMap<>();
         textureMap.put(1, redBrickTexture);
@@ -193,10 +195,11 @@ public class MainGame implements GameComponent {
     }
 
     private void drawSky() {
-        for (int y = 0; y < skyTexture.getHeight(); y++) {
-            for (int x = 0; x < skyTexture.getWidth(); x++) {
-                if (y >= DisplayManager.SCREEN_HEIGHT || x >= DisplayManager.SCREEN_WIDTH) continue;
-                int skyPixel = skyTexture.getPixel(x, y);
+        for (int y=0; y<twilightTexture.getHeight(); y++) {
+            for (int x=0; x<DisplayManager.SCREEN_WIDTH; x++) {
+                if (y >= DisplayManager.SCREEN_HEIGHT) break;
+                int tx = x % twilightTexture.getWidth();
+                int skyPixel = twilightTexture.getPixel(tx, y);
                 screenPixels[y * DisplayManager.SCREEN_WIDTH + x] = skyPixel;
             }
         }
