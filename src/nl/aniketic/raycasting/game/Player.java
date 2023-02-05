@@ -23,8 +23,8 @@ public class Player implements GameComponent {
     public Vector2f deltaPosition;
 
     public float angle;
-    public float speed = 1.8f;
-    public float rot_speed = 2.4f;
+    public float speed = 3.0f;
+    public float rot_speed = 2.8f;
 
     private int prevMouseX;
     private Robot robot;
@@ -74,62 +74,69 @@ public class Player implements GameComponent {
     private void movePlayer() {
         deltaPosition.x = (float) Math.cos(Math.toRadians(angle));
         deltaPosition.y = (float) Math.sin(Math.toRadians(angle));
+        
+        Vector2f newPos = new Vector2f(position.x, position.y);
 
-        // move forward
         if (GameKey.UP.isPressed()) {
-            float potentialX = position.x + deltaPosition.x * speed;
-            float potentialY = position.y + deltaPosition.y * speed;
-            float checkX = position.x + deltaPosition.x * PLAYER_SIZE * speed;
-            float checkY = position.y + deltaPosition.y * PLAYER_SIZE * speed;
+            float potentialX = newPos.x + deltaPosition.x * speed;
+            float potentialY = newPos.y + deltaPosition.y * speed;
+            float checkX = newPos.x + deltaPosition.x * PLAYER_SIZE * speed;
+            float checkY = newPos.y + deltaPosition.y * PLAYER_SIZE * speed;
 
-            if (!isWall((int) checkX, (int) position.y)) {
-                position.x = potentialX;
+            if (!isWall((int) checkX, (int) newPos.y)) {
+                newPos.x = potentialX;
             }
-            if (!isWall((int) position.x, (int) checkY)) {
-                position.y = potentialY;
+            if (!isWall((int) newPos.x, (int) checkY)) {
+                newPos.y = potentialY;
             }
         }
-        // move backward
         if (GameKey.DOWN.isPressed()) {
-            float potentialX = position.x - deltaPosition.x * speed;
-            float potentialY = position.y - deltaPosition.y * speed;
-            float checkX = position.x - deltaPosition.x * PLAYER_SIZE * speed;
-            float checkY = position.y - deltaPosition.y * PLAYER_SIZE * speed;
+            float potentialX = newPos.x - deltaPosition.x * speed;
+            float potentialY = newPos.y - deltaPosition.y * speed;
+            float checkX = newPos.x - deltaPosition.x * PLAYER_SIZE * speed;
+            float checkY = newPos.y - deltaPosition.y * PLAYER_SIZE * speed;
 
-            if (!isWall((int) checkX, (int) position.y)) {
-                position.x = potentialX;
+            if (!isWall((int) checkX, (int) newPos.y)) {
+                newPos.x = potentialX;
             }
-            if (!isWall((int) position.x, (int) checkY)) {
-                position.y = potentialY;
+            if (!isWall((int) newPos.x, (int) checkY)) {
+                newPos.y = potentialY;
             }
         }
 
         if (GameKey.LEFT.isPressed()) {
-            float potentialX = position.x + deltaPosition.y * speed;
-            float potentialY = position.y - deltaPosition.x * speed;
-            float checkX = position.x + deltaPosition.y * PLAYER_SIZE * speed;
-            float checkY = position.y - deltaPosition.x * PLAYER_SIZE * speed;
+            float potentialX = newPos.x + deltaPosition.y * speed;
+            float potentialY = newPos.y - deltaPosition.x * speed;
+            float checkX = newPos.x + deltaPosition.y * PLAYER_SIZE * speed;
+            float checkY = newPos.y - deltaPosition.x * PLAYER_SIZE * speed;
 
-            if (!isWall((int) checkX, (int) position.y)) {
-                position.x = potentialX;
+            if (!isWall((int) checkX, (int) newPos.y)) {
+                newPos.x = potentialX;
             }
-            if (!isWall((int) position.x, (int) checkY)) {
-                position.y = potentialY;
+            if (!isWall((int) newPos.x, (int) checkY)) {
+                newPos.y = potentialY;
             }
         }
 
         if (GameKey.RIGHT.isPressed()) {
-            float potentialX = position.x - deltaPosition.y * speed;
-            float potentialY = position.y + deltaPosition.x * speed;
-            float checkX = position.x - deltaPosition.y * PLAYER_SIZE * speed;
-            float checkY = position.y + deltaPosition.x * PLAYER_SIZE * speed;
+            float potentialX = newPos.x - deltaPosition.y * speed;
+            float potentialY = newPos.y + deltaPosition.x * speed;
+            float checkX = newPos.x - deltaPosition.y * PLAYER_SIZE * speed;
+            float checkY = newPos.y + deltaPosition.x * PLAYER_SIZE * speed;
 
-            if (!isWall((int) checkX, (int) position.y)) {
-                position.x = potentialX;
+            if (!isWall((int) checkX, (int) newPos.y)) {
+                newPos.x = potentialX;
             }
-            if (!isWall((int) position.x, (int) checkY)) {
-                position.y = potentialY;
+            if (!isWall((int) newPos.x, (int) checkY)) {
+                newPos.y = potentialY;
             }
+        }
+
+        Vector2f delta = Vector2f.sub(newPos, position);
+        if (Vector2f.length(delta) > 0.0f) {
+            delta = Vector2f.normalize(delta);
+            delta = Vector2f.mul(delta, speed);
+            position = Vector2f.add(position, delta);
         }
     }
 
