@@ -14,7 +14,7 @@ import java.util.Arrays;
 public class MainGame implements GameComponent {
 
     public static final int CUBE_SIZE = 64;
-    public static final int PLAYER_HEIGHT = 32;
+    public static final float PLAYER_HEIGHT = 32.0f;
     public static final int PLAYER_SIZE = 8;
     public static final int FOV = 60; // Degrees
     public static final int PROJECTION_PLANE_WIDTH = DisplayManager.SCREEN_WIDTH;
@@ -102,9 +102,9 @@ public class MainGame implements GameComponent {
                 closestIntersection = horizontalWallCollision;
             }
 
-            float ca = player.angle - castArc;
-            if (ca < 0) ca += 360.0f;
-            closestDistance *= Math.cos(Math.toRadians(ca)); // Fix fisheye
+            float deltaAngle = player.angle - castArc;
+            if (deltaAngle < 0) deltaAngle += 360.0f;
+            closestDistance *= Math.cos(Math.toRadians(deltaAngle)); // Fix fisheye
 
             // DRAW THE WALL SLICE
             float dist;
@@ -120,50 +120,12 @@ public class MainGame implements GameComponent {
             }
 
             float projectedWallHeight = (CUBE_SIZE * DISTANCE_TO_PROJECTION_PLANE / dist);
-            bottomOfWall = (int) ((PROJECTION_PLANE_HEIGHT / 2.0f) + (projectedWallHeight * 0.5f));
-            topOfWall = (int) ((PROJECTION_PLANE_HEIGHT / 2.0f) - (projectedWallHeight * 0.5f));
+            bottomOfWall = (int) ((PROJECTION_PLANE_HEIGHT * 0.5f) + (projectedWallHeight * 0.5f));
+            topOfWall = (int) ((PROJECTION_PLANE_HEIGHT * 0.5f) - (projectedWallHeight * 0.5f));
 
             float shade = MathUtil.map(closestDistance, 0, 400, 0.0f, 1.0f);
             drawWallSliceRectangle(castColumn, topOfWall, 1, ((bottomOfWall - topOfWall) + 1), shade, xOffset);
-
-            // DRAW THE FLOOR
-            float projectionPlaneCenterY=PROJECTION_PLANE_HEIGHT/2.0f;
-            float lastBottomOfWall = (float) Math.floor(bottomOfWall);
-
-            for (float row=lastBottomOfWall;row<PROJECTION_PLANE_HEIGHT;row++)
-            {
-                float ratio=((float)PLAYER_HEIGHT)/(row-projectionPlaneCenterY);
-                float diagonalDistance=DISTANCE_TO_PROJECTION_PLANE*ratio;
-                diagonalDistance *= 1.0f / Math.cos(Math.toRadians(ca)); // Fix fisheye
-
-                float yEnd = (float) (diagonalDistance * Math.sin(Math.toRadians(castArc)));
-                float xEnd = (float) (diagonalDistance * Math.cos(Math.toRadians(castArc)));
-
-                // Translate relative to viewer coordinates:
-                xEnd+=player.position.x;
-                yEnd+=player.position.y;
-
-                // Get the tile intersected by ray:
-                float cellX = xEnd / CUBE_SIZE;
-                float cellY = xEnd / CUBE_SIZE;
-
-                //Make sure the tile is within our map
-                if ((cellX<MAP[0].length) &&
-                        (cellY<MAP.length) &&
-                        cellX>=0 && cellY>=0)
-                {
-                    // Find offset of tile and column in texture
-                    int tileRow = (int) Math.floor(yEnd % CUBE_SIZE);
-                    int tileColumn = (int) Math.floor(xEnd % CUBE_SIZE);
-
-                    int rgb = checkerPixels[tileRow * 64 + tileColumn];
-                    shade = MathUtil.map(diagonalDistance, 0, 320, 0.0f, 1.0f);
-                    Color c = applyShade(new Color(rgb), shade);
-
-//                    if (row < 0 || row >= DisplayManager.SCREEN_HEIGHT || castColumn < 0 || castColumn >= DisplayManager.SCREEN_WIDTH) continue;
-                    screenPixels[(int)Math.floor(row) * DisplayManager.SCREEN_WIDTH + castColumn] = c.getRGB();
-                }
-            }
+            drawFloor(castArc, castColumn, bottomOfWall);
 
             // Increase the arc for the next iteration
             castArc += ANGLE_BETWEEN_RAYS;
@@ -174,8 +136,55 @@ public class MainGame implements GameComponent {
 
         g2.drawImage(screenImage, 0, 0, DisplayManager.SCREEN_WIDTH, DisplayManager.SCREEN_HEIGHT, null);
 
-
         renderMiniMap(g2);
+    }
+
+    private void drawFloor(float castArc, int castColumn, int bottomOfWall) {
+        float deltaAngle = player.angle - castArc;
+        if (deltaAngle < 0) deltaAngle += 360.0f;
+
+        float projectionPlaneCenterY=PROJECTION_PLANE_HEIGHT/2.0f;
+
+        for (int row = bottomOfWall; row < PROJECTION_PLANE_HEIGHT; row++)
+        {
+            float deltaRow = row - projectionPlaneCenterY;
+            float ratio = PLAYER_HEIGHT / deltaRow;
+            float diagonalDistance = DISTANCE_TO_PROJECTION_PLANE * ratio;
+            diagonalDistance *= 1.0f / Math.cos(Math.toRadians(deltaAngle)); // Fix fisheye
+            diagonalDistance = (float) Math.floor(diagonalDistance); // Fix rounding error
+
+            float yEnd = (float) (diagonalDistance * Math.sin(Math.toRadians(castArc)));
+            float xEnd = (float) (diagonalDistance * Math.cos(Math.toRadians(castArc)));
+
+            // Translate relative to viewer coordinates:
+            xEnd += player.position.x;
+            yEnd += player.position.y;
+
+            xEnd = (float) Math.floor(xEnd); // Fix rounding error
+            yEnd = (float) Math.floor(yEnd); // Fix rounding error
+
+            // Get the tile intersected by ray:
+            float cellX = xEnd / CUBE_SIZE;
+            float cellY = xEnd / CUBE_SIZE;
+
+            //Make sure the tile is within our map
+            if ((cellX<MAP[0].length) &&
+                    (cellY<MAP.length) &&
+                    cellX>=0 && cellY>=0)
+            {
+                // Find offset of tile and column in texture
+                int tileRow = (int) Math.floor(yEnd % CUBE_SIZE);
+                int tileColumn = (int) Math.floor(xEnd % CUBE_SIZE);
+                int textureIndex = tileRow * 64 + tileColumn;
+                int rgb = checkerDebugPixels[textureIndex];
+
+                float shade = MathUtil.map(diagonalDistance, 0, 320, 0.0f, 1.0f);
+                Color shadedPixelColor = applyShade(new Color(rgb), shade);
+
+                int screenPixelIndex = row * DisplayManager.SCREEN_WIDTH + castColumn;
+                screenPixels[screenPixelIndex] = shadedPixelColor.getRGB();
+            }
+        }
     }
 
     private void drawWallSliceRectangle(int x, int y, int width, int height, float shade, int xOffset) {
