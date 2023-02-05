@@ -64,6 +64,7 @@ public class MainGame implements GameComponent {
     private Texture redBrickTexture;
     private Texture eagleTexture;
     private Texture twilightTexture;
+    private Texture waterTexture;
 
     private Map<Integer, Texture> textureMap;
 
@@ -86,6 +87,7 @@ public class MainGame implements GameComponent {
         redBrickTexture = loadTexture("./res/textures/red_bricks_1024x1024.png");
         eagleTexture = loadTexture("./res/textures/eagle_1024x1024.png");
         twilightTexture = loadTexture("./res/textures/twilight_sky_1200x400.png");
+        waterTexture = loadTexture("./res/textures/water_1500x1500.jpg");
 
         textureMap = new HashMap<>();
         textureMap.put(1, redBrickTexture);
@@ -137,6 +139,14 @@ public class MainGame implements GameComponent {
             player.rot_speed -= 0.1f;
             System.out.println("Look speed down: " + player.rot_speed);
         }
+        if (GameKey._5.isPressed()) {
+            player.yPerspectiveOffset += 4;
+            System.out.println("VerticalLookOffset increased: " + player.yPerspectiveOffset);
+        }
+        if (GameKey._6.isPressed()) {
+            player.yPerspectiveOffset -= 4;
+            System.out.println("VerticalLookOffset decreased: " + player.yPerspectiveOffset);
+        }
     }
 
     @Override
@@ -150,6 +160,7 @@ public class MainGame implements GameComponent {
         Arrays.fill(screenPixels, 0);
 
         drawSky();
+//        drawWater();
 
         float castArc = player.angle;
         castArc -= FOV / 2.0f;
@@ -193,9 +204,9 @@ public class MainGame implements GameComponent {
             }
 
             float projectedWallHeight = (CUBE_SIZE * DISTANCE_TO_PROJECTION_PLANE / dist);
-            bottomOfWall = Math.round((PROJECTION_PLANE_HEIGHT * 0.5f) + (projectedWallHeight * 0.5f));
+            bottomOfWall = Math.round((PROJECTION_PLANE_HEIGHT * 0.5f + player.yPerspectiveOffset) + (projectedWallHeight * 0.5f));
             bottomOfWall++; // Add magic pixel to obscure any rounding errors when drawing the floor textures
-            topOfWall = Math.round((PROJECTION_PLANE_HEIGHT * 0.5f) - (projectedWallHeight * 0.5f));
+            topOfWall = Math.round((PROJECTION_PLANE_HEIGHT * 0.5f + player.yPerspectiveOffset) - (projectedWallHeight * 0.5f));
 
             float shade = MathUtil.map(closestDistance, 0, 400, 0.0f, 0.85f);
 
@@ -237,11 +248,26 @@ public class MainGame implements GameComponent {
         }
     }
 
+    private void drawWater() {
+        int yOffset = DisplayManager.SCREEN_HEIGHT / 2;
+        for (int y=0; y<waterTexture.getHeight(); y++) {
+            for (int x=0; x<DisplayManager.SCREEN_WIDTH; x++) {
+                if (y + yOffset >= DisplayManager.SCREEN_HEIGHT) break;
+
+                int xOffset = (int) MathUtil.map(player.angle, 0.0f, 359.999f, 0, waterTexture.getWidth() * 2);
+
+                int tx = (x+xOffset) % waterTexture.getWidth();
+                int skyPixel = waterTexture.getPixel(tx, y);
+                screenPixels[(y + yOffset) * DisplayManager.SCREEN_WIDTH + x] = skyPixel;
+            }
+        }
+    }
+
     private void drawFloor(float castArc, int castColumn, int bottomOfWall) {
         float deltaAngle = player.angle - castArc;
         if (deltaAngle < 0) deltaAngle += 360.0f;
 
-        float projectionPlaneCenterY = PROJECTION_PLANE_HEIGHT / 2.0f;
+        float projectionPlaneCenterY = PROJECTION_PLANE_HEIGHT * 0.5f + player.yPerspectiveOffset;
 
         for (int row = bottomOfWall; row < PROJECTION_PLANE_HEIGHT; row++) {
             float deltaRow = row - projectionPlaneCenterY;
@@ -270,6 +296,7 @@ public class MainGame implements GameComponent {
                     cellX >= 0 && cellY >= 0) {
                 Texture texture = grayBrickTexture;
                 if (Math.floor(cellX)==1 && Math.floor(cellY)==1) texture = checkerTexture_64;
+                if ((Math.floor(cellX)==8 || Math.floor(cellX)==9) && !(Math.floor(cellY)==4)) continue;
 
                 // Find offset of tile and column in texture
                 float tileRow = (float) (Math.floor(yEnd % CUBE_SIZE) / CUBE_SIZE);

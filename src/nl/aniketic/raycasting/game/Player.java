@@ -25,8 +25,11 @@ public class Player implements GameComponent {
     public float angle;
     public float speed = 3.0f;
     public float rot_speed = 2.8f;
+    public float verticalLookSpeed = 10.8f;
+    public float yPerspectiveOffset;
 
     private int prevMouseX;
+    private int prevMouseY;
     private Robot robot;
 
     public Player(float x, float y) {
@@ -62,13 +65,28 @@ public class Player implements GameComponent {
                     angle -= 360.0f;
             }
         }
+
+        int currentMouseY = currentMouseLocation.y;
+        if (currentMouseY != prevMouseY) {
+            if (currentMouseY < prevMouseY) {
+                yPerspectiveOffset += verticalLookSpeed;
+            } else {
+                yPerspectiveOffset -= verticalLookSpeed;
+            }
+        }
+
+
+        // Reset mouse position
         JFrame window = DisplayManager.getWindow();
         if (window == null) return;
 
         Point locationOnScreen = window.getLocationOnScreen();
         int mouseX = (int) (locationOnScreen.getX() + DisplayManager.SCREEN_WIDTH / 2);
-        robot.mouseMove(mouseX, currentMouseLocation.y);
-        prevMouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
+        int mouseY = (int) (locationOnScreen.getY() + DisplayManager.SCREEN_HEIGHT / 2);
+        robot.mouseMove(mouseX, mouseY);
+        currentMouseLocation = MouseInfo.getPointerInfo().getLocation();
+        prevMouseX = (int) currentMouseLocation.getX();
+        prevMouseY = (int) currentMouseLocation.getY();
     }
 
     private void movePlayer() {
