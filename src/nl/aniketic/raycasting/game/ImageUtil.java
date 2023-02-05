@@ -25,6 +25,17 @@ public class ImageUtil {
         return scaledImage;
     }
 
+    public static BufferedImage scaleImage(BufferedImage original, float scale) {
+        int width = Math.round(original.getWidth() * scale);
+        int height = Math.round(original.getHeight() * scale);
+
+        BufferedImage scaledImage = new BufferedImage(width, height, original.getType());
+        Graphics2D g2 = scaledImage.createGraphics();
+        g2.drawImage(original, 0, 0, width, height, null);
+        g2.dispose();
+        return scaledImage;
+    }
+
     private ImageUtil() {
         // Hide constructor
     }

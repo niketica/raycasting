@@ -17,7 +17,7 @@ public class Player implements GameComponent {
     public Vector2f deltaPosition;
 
     public float angle;
-    public float speed = 1.4f;
+    public float speed = 1.8f;
     public float rot_speed = 1.4f;
 
     public Player(float x, float y) {

@@ -37,30 +37,34 @@ public class MainGame implements GameComponent {
 
     private Player player;
 
-    private int[] checkerPixels;
-    private int[] checkerDebugPixels;
-    private int[] wallPixels;
-    private int[] stonePixels;
+    private Texture checkerTexture;
+    private Texture checkerDebugTexture;
+    private Texture wallTexture;
+    private Texture stoneTexture;
+    private Texture skyTexture;
+
     private BufferedImage screenImage;
     private int[] screenPixels;
 
     public MainGame() {
         player = new Player(96.0f, 224.0f);
-        BufferedImage checkerTile = ImageUtil.loadImage("./res/textures/checker_brown_64x64.png");
-        checkerPixels = checkerTile.getRGB(0, 0, checkerTile.getWidth(), checkerTile.getHeight(), null, 0, 64);
 
-        BufferedImage checkerDebugTile = ImageUtil.loadImage("./res/textures/checker_brown_debug_64x64.png");
-        checkerDebugPixels = checkerDebugTile.getRGB(0, 0, checkerTile.getWidth(), checkerTile.getHeight(), null, 0, 64);
-
-        BufferedImage wallTile = ImageUtil.loadImage("./res/textures/wall_64x64.png");
-        wallPixels = wallTile.getRGB(0, 0, checkerTile.getWidth(), checkerTile.getHeight(), null, 0, 64);
-
-//        BufferedImage stoneTile = ImageUtil.loadImage("./res/textures/stone_64x64.png");
-//        stonePixels = stoneTile.getRGB(0, 0, checkerTile.getWidth(), checkerTile.getHeight(), null, 0, 64);
+        checkerTexture = loadTexture("./res/textures/checker_brown_64x64.png", 1.0f);
+        checkerDebugTexture = loadTexture("./res/textures/checker_brown_debug_64x64.png", 1.0f);
+        wallTexture = loadTexture("./res/textures/wall_64x64.png", 1.0f);
+        stoneTexture = loadTexture("./res/textures/stone_64x64.png", 1.0f);
+        skyTexture = loadTexture("./res/textures/sky.jpg", 3.0f);
 
         screenImage = new BufferedImage(DisplayManager.SCREEN_WIDTH, DisplayManager.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         screenImage.setAccelerationPriority(0); // Just to be sure
         screenPixels = ((DataBufferInt) screenImage.getRaster().getDataBuffer()).getData();
+    }
+
+    private static Texture loadTexture(String filePath, float scale) {
+        BufferedImage skyImage = ImageUtil.loadImage(filePath);
+        skyImage = ImageUtil.scaleImage(skyImage, scale);
+        int[] skyPixels = skyImage.getRGB(0, 0, skyImage.getWidth(), skyImage.getHeight(), null, 0, skyImage.getWidth());
+        return new Texture(skyImage.getWidth(), skyImage.getHeight(), skyPixels);
     }
 
     @Override
@@ -77,6 +81,8 @@ public class MainGame implements GameComponent {
     public void render(Graphics2D g2) {
         // Clear screen
         Arrays.fill(screenPixels, 0);
+
+        drawSky();
 
         float castArc = player.angle;
         castArc -= FOV / 2.0f;
@@ -136,17 +142,26 @@ public class MainGame implements GameComponent {
 
         g2.drawImage(screenImage, 0, 0, DisplayManager.SCREEN_WIDTH, DisplayManager.SCREEN_HEIGHT, null);
 
-        renderMiniMap(g2);
+//        renderMiniMap(g2);
+    }
+
+    private void drawSky() {
+        for (int y = 0; y < skyTexture.getHeight(); y++) {
+            for (int x = 0; x < skyTexture.getWidth(); x++) {
+                if (y >= DisplayManager.SCREEN_HEIGHT || x >= DisplayManager.SCREEN_WIDTH) continue;
+                int skyPixel = skyTexture.getPixel(x, y);
+                screenPixels[y * DisplayManager.SCREEN_WIDTH + x] = skyPixel;
+            }
+        }
     }
 
     private void drawFloor(float castArc, int castColumn, int bottomOfWall) {
         float deltaAngle = player.angle - castArc;
         if (deltaAngle < 0) deltaAngle += 360.0f;
 
-        float projectionPlaneCenterY=PROJECTION_PLANE_HEIGHT/2.0f;
+        float projectionPlaneCenterY = PROJECTION_PLANE_HEIGHT / 2.0f;
 
-        for (int row = bottomOfWall; row < PROJECTION_PLANE_HEIGHT; row++)
-        {
+        for (int row = bottomOfWall; row < PROJECTION_PLANE_HEIGHT; row++) {
             float deltaRow = row - projectionPlaneCenterY;
             float ratio = PLAYER_HEIGHT / deltaRow;
             float diagonalDistance = DISTANCE_TO_PROJECTION_PLANE * ratio;
@@ -168,20 +183,19 @@ public class MainGame implements GameComponent {
             float cellY = xEnd / CUBE_SIZE;
 
             //Make sure the tile is within our map
-            if ((cellX<MAP[0].length) &&
-                    (cellY<MAP.length) &&
-                    cellX>=0 && cellY>=0)
-            {
+            if ((cellX < MAP[0].length) &&
+                    (cellY < MAP.length) &&
+                    cellX >= 0 && cellY >= 0) {
                 // Find offset of tile and column in texture
                 int tileRow = (int) Math.floor(yEnd % CUBE_SIZE);
                 int tileColumn = (int) Math.floor(xEnd % CUBE_SIZE);
                 int textureIndex = tileRow * 64 + tileColumn;
-                int rgb = checkerDebugPixels[textureIndex];
+                int rgb = stoneTexture.getPixel(textureIndex);
 
                 float shade = MathUtil.map(diagonalDistance, 0, 320, 0.0f, 1.0f);
                 Color shadedPixelColor = applyShade(new Color(rgb), shade);
 
-                int screenPixelIndex = row * DisplayManager.SCREEN_WIDTH + castColumn;
+                int screenPixelIndex = row * PROJECTION_PLANE_WIDTH + castColumn;
                 screenPixels[screenPixelIndex] = shadedPixelColor.getRGB();
             }
         }
@@ -191,14 +205,14 @@ public class MainGame implements GameComponent {
         int sx = xOffset;
         int sy;
         for (int worldY = y; worldY < y + height; worldY++) {
-            if (worldY < 0 || worldY >= DisplayManager.SCREEN_HEIGHT) continue;
+            if (worldY < 0 || worldY >= PROJECTION_PLANE_HEIGHT) continue;
             sy = (int) MathUtil.map(worldY, y, y + height, 0, 64);
 
             for (int worldX = x; worldX < x + width; worldX++) {
-                if (worldX < 0 || worldX >= DisplayManager.SCREEN_WIDTH) continue;
-                int rgb = wallPixels[sy * 64 + sx];
+                if (worldX < 0 || worldX >= PROJECTION_PLANE_WIDTH) continue;
+                int rgb = wallTexture.getPixel(sx, sy);
                 Color c = applyShade(new Color(rgb), shade);
-                screenPixels[worldY * DisplayManager.SCREEN_WIDTH + worldX] = c.getRGB();
+                screenPixels[worldY * PROJECTION_PLANE_WIDTH + worldX] = c.getRGB();
             }
         }
     }
