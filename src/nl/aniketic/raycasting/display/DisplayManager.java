@@ -3,9 +3,13 @@ package nl.aniketic.raycasting.display;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 
 public class DisplayManager extends JPanel {
 
@@ -37,6 +41,15 @@ public class DisplayManager extends JPanel {
         window.setVisible(true);
 
         WINDOW = window;
+
+        hideMouseCursor();
+    }
+
+    public void hideMouseCursor() {
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        Cursor invisibleCursor = Toolkit.getDefaultToolkit()
+                .createCustomCursor(cursorImg, new Point(0, 0), "invicible_cursor");
+        WINDOW.getContentPane().setCursor(invisibleCursor);
     }
 
     @Override
