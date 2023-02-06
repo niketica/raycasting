@@ -308,7 +308,7 @@ public class MainGame implements GameComponent {
                     cellX >= 0 && cellY >= 0) {
                 Texture texture = grayBrickTexture;
                 if (Math.floor(cellX) == 1 && Math.floor(cellY) == 1) texture = checkerDebugTexture;
-                if ((Math.floor(cellX) == 8 || Math.floor(cellX) == 9) && !(Math.floor(cellY) == 4)) continue;
+//                if ((Math.floor(cellX) == 8 || Math.floor(cellX) == 9) && !(Math.floor(cellY) == 4)) continue;
 
                 // Find offset of tile and column in texture
                 float tileRow = (float) (Math.floor(yEnd % CUBE_SIZE) / CUBE_SIZE);
@@ -319,6 +319,7 @@ public class MainGame implements GameComponent {
                 Color shadedPixelColor = applyShade(new Color(rgb), shade);
 
                 int screenPixelIndex = row * PROJECTION_PLANE_WIDTH + castColumn;
+                if (screenPixelIndex < 0 || screenPixelIndex >= screenPixels.length) continue;
                 screenPixels[screenPixelIndex] = shadedPixelColor.getRGB();
             }
         }
