@@ -19,8 +19,8 @@ public class MainGame implements GameComponent {
     public static final int CUBE_SIZE = 64;
     public static final int PLAYER_SIZE = 8;
     public static final int FOV = 60; // Degrees
-    public static final int PROJECTION_PLANE_WIDTH = DisplayManager.SCREEN_WIDTH;
-    public static final int PROJECTION_PLANE_HEIGHT = DisplayManager.SCREEN_HEIGHT;
+    public static final int PROJECTION_PLANE_WIDTH = DisplayManager.SCREEN_WIDTH / 2;
+    public static final int PROJECTION_PLANE_HEIGHT = DisplayManager.SCREEN_HEIGHT / 2;
     public static final int DISTANCE_TO_PROJECTION_PLANE = (int) ((PROJECTION_PLANE_WIDTH / 2) / Math.tan(Math.toRadians(FOV) / 2.0f));
     public static final int NUMBER_OF_RAYS = PROJECTION_PLANE_WIDTH;
     public static final float ANGLE_BETWEEN_RAYS = (float) FOV / (float) NUMBER_OF_RAYS;
@@ -78,14 +78,14 @@ public class MainGame implements GameComponent {
         checkerDebugTexture = loadTexture("./res/textures/checker_brown_debug_64x64.png", 1.0f);
         wallTexture = loadTexture("./res/textures/wall_64x64.png", 1.0f);
         stoneTexture = loadTexture("./res/textures/stone_64x64.png", 1.0f);
-        skyTexture = loadTexture("./res/textures/sky.jpg", 3.0f);
+        skyTexture = loadTexture("./res/textures/sky.jpg", 2.0f);
 
         grayBrickTexture = loadTexture("./res/textures/gray_bricks_1024x1024.png");
         mossyTexture = loadTexture("./res/textures/mossy_bricks_1024x1024.png");
         faceTexture = loadTexture("./res/textures/face_bricks_1024x1024.png");
         redBrickTexture = loadTexture("./res/textures/red_bricks_1024x1024.png");
         eagleTexture = loadTexture("./res/textures/eagle_1024x1024.png");
-        twilightTexture = loadTexture("./res/textures/twilight_sky_1200x400.png", 4.0f);
+        twilightTexture = loadTexture("./res/textures/twilight_sky_1200x400.png", 2.0f);
         waterTexture = loadTexture("./res/textures/water_1500x1500.jpg");
 
         textureMap = new HashMap<>();
@@ -95,7 +95,7 @@ public class MainGame implements GameComponent {
         textureMap.put(4, grayBrickTexture);
         textureMap.put(5, eagleTexture);
 
-        screenImage = new BufferedImage(DisplayManager.SCREEN_WIDTH, DisplayManager.SCREEN_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        screenImage = new BufferedImage(PROJECTION_PLANE_WIDTH, PROJECTION_PLANE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         screenImage.setAccelerationPriority(0); // Just to be sure
         screenPixels = ((DataBufferInt) screenImage.getRaster().getDataBuffer()).getData();
     }
@@ -243,34 +243,34 @@ public class MainGame implements GameComponent {
             }
         }
 
-        g2.drawImage(screenImage, 0, 0, DisplayManager.SCREEN_WIDTH, DisplayManager.SCREEN_HEIGHT, null);
+        g2.drawImage(screenImage, 0, 0, PROJECTION_PLANE_WIDTH * 2, PROJECTION_PLANE_HEIGHT * 2, null);
     }
 
     private void drawSky() {
-        for (int y = 0; y < DisplayManager.SCREEN_HEIGHT; y++) {
-            for (int x = 0; x < DisplayManager.SCREEN_WIDTH; x++) {
+        for (int y = 0; y < PROJECTION_PLANE_HEIGHT; y++) {
+            for (int x = 0; x < PROJECTION_PLANE_WIDTH; x++) {
                 int xOffset = (int) MathUtil.map(player.angle, 0.0f, 359.999f, 0, twilightTexture.getWidth() * 2);
 //                int yOffset = (int) MathUtil.map(player.angle, 0.0f, 359.999f, 0, twilightTexture.getWidth() * 2);
 
                 int tx = (x + xOffset) % twilightTexture.getWidth();
                 int ty = (y) % twilightTexture.getHeight();
                 int skyPixel = twilightTexture.getPixel(tx, ty);
-                screenPixels[y * DisplayManager.SCREEN_WIDTH + x] = skyPixel;
+                screenPixels[y * PROJECTION_PLANE_WIDTH + x] = skyPixel;
             }
         }
     }
 
     private void drawWater() {
-        int yOffset = DisplayManager.SCREEN_HEIGHT / 2;
+        int yOffset = PROJECTION_PLANE_HEIGHT / 2;
         for (int y = 0; y < waterTexture.getHeight(); y++) {
-            for (int x = 0; x < DisplayManager.SCREEN_WIDTH; x++) {
-                if (y + yOffset >= DisplayManager.SCREEN_HEIGHT) break;
+            for (int x = 0; x < PROJECTION_PLANE_WIDTH; x++) {
+                if (y + yOffset >= PROJECTION_PLANE_HEIGHT) break;
 
                 int xOffset = (int) MathUtil.map(player.angle, 0.0f, 359.999f, 0, waterTexture.getWidth() * 2);
 
                 int tx = (x + xOffset) % waterTexture.getWidth();
                 int skyPixel = waterTexture.getPixel(tx, y);
-                screenPixels[(y + yOffset) * DisplayManager.SCREEN_WIDTH + x] = skyPixel;
+                screenPixels[(y + yOffset) * PROJECTION_PLANE_WIDTH + x] = skyPixel;
             }
         }
     }
