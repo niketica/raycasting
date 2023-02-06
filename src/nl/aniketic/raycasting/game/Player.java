@@ -25,8 +25,12 @@ public class Player implements GameComponent {
     public float angle;
     public float speed = 3.0f;
     public float rot_speed = 2.8f;
-    public float verticalLookSpeed = 10.8f;
+    public float verticalLookSpeed = 14.0f;
     public float yPerspectiveOffset;
+    public float standHeight = 32.0f;
+    public float currentHeight = standHeight;
+    public float crouchHeight = 16.0f;
+    public float crouchSpeed = 0.4f;
 
     private int prevMouseX;
     private int prevMouseY;
@@ -49,6 +53,16 @@ public class Player implements GameComponent {
     public void input() {
         rotatePlayer();
         movePlayer();
+
+        if (GameKey.CTRL.isPressed() && currentHeight > crouchHeight) {
+            currentHeight -= crouchSpeed;
+            if (currentHeight < crouchHeight) currentHeight = crouchHeight;
+        }
+
+        if (currentHeight < standHeight && !GameKey.CTRL.isPressed()) {
+            currentHeight += crouchSpeed;
+            if (currentHeight > standHeight) currentHeight = standHeight;
+        }
     }
 
     private void rotatePlayer() {
@@ -92,7 +106,7 @@ public class Player implements GameComponent {
     private void movePlayer() {
         deltaPosition.x = (float) Math.cos(Math.toRadians(angle));
         deltaPosition.y = (float) Math.sin(Math.toRadians(angle));
-        
+
         Vector2f newPos = new Vector2f(position.x, position.y);
 
         if (GameKey.UP.isPressed()) {

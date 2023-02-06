@@ -22,7 +22,8 @@ public enum GameKey {
     _6(KeyEvent.VK_6),
     _7(KeyEvent.VK_7),
     _8(KeyEvent.VK_8),
-    _9(KeyEvent.VK_9);
+    _9(KeyEvent.VK_9),
+    CTRL(KeyEvent.VK_CONTROL);
 
     private final int keyCode;
     private boolean pressed;
@@ -31,14 +32,14 @@ public enum GameKey {
         this.keyCode = keyCode;
     }
 
-   public static GameKey getKey(int keyCode) {
+    public static GameKey getKey(int keyCode) {
         for (GameKey key : GameKey.values()) {
             if (key.keyCode == keyCode) {
                 return key;
             }
         }
         return null;
-   }
+    }
 
     public boolean isPressed() {
         return pressed;
