@@ -37,34 +37,34 @@ public class MainGame implements GameComponent {
 //            {1, 5, 1, 1, 1, 1, 5, 1}
 //    };
 
-    public static final int[][] MAP = {
-            {1, 2, 2, 1, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1},
-            {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 4, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 5, 1, 1, 1, 1, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1}
-    };
-
 //    public static final int[][] MAP = {
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+//            {1, 2, 2, 1, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1},
+//            {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+//            {1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+//            {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+//            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+//            {1, 0, 4, 4, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+//            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+//            {1, 5, 1, 1, 1, 1, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1}
 //    };
+
+    public static int[][] map = {
+            {4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1},
+            {4, 0, 4, 2, 0, 0, 0, -1, 0, 0, 0, 0, 2, 0, 0, 0, 1},
+            {4, 0, 4, 2, 3, 0, 3, -1, 3, 0, 3, 0, 2, 0, 0, 0, 1},
+            {4, 0, 4, 2, 0, 0, 0, -1, -1, -1, -1, -1, 6, 0, 0, 0, 1},
+            {4, 0, 4, 2, 0, 0, 0, 0, 0, 0, 3, 0, 2, 0, 0, 0, 1},
+            {2, 3, 2, 2, 2, 0, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 1},
+            {2, -1, -1, -1, -1, -1, -1, 2, 0, 0, 0, 0, 2, 0, 0, 0, 1},
+            {2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 5, 1, 2, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+    };
 
     private Player player;
 
@@ -80,6 +80,9 @@ public class MainGame implements GameComponent {
     private Texture faceTexture;
     private Texture redBrickTexture;
     private Texture eagleTexture;
+    private Texture dudeTexture;
+    private Texture greenFloorTexture;
+
     private Texture twilightTexture;
     private Texture waterTexture;
 
@@ -91,7 +94,8 @@ public class MainGame implements GameComponent {
     private int[] screenPixels;
 
     public MainGame() {
-        player = new Player(96.0f, 224.0f);
+        player = new Player(1.5f * CUBE_SIZE, 1.5f * CUBE_SIZE);
+        player.angle = 90.0f;
 
         checkerTexture_64 = new Texture("./res/textures/checker_brown_64x64.png", 1.0f);
         checkerTexture_128 = new Texture("./res/textures/checker_brown_128x128.png", 1.0f);
@@ -105,6 +109,9 @@ public class MainGame implements GameComponent {
         faceTexture = new Texture("./res/textures/face_bricks_1024x1024.png");
         redBrickTexture = new Texture("./res/textures/red_bricks_1024x1024.png");
         eagleTexture = new Texture("./res/textures/eagle_1024x1024.png");
+        dudeTexture = new Texture("./res/textures/SP_DUDE1.png");
+        greenFloorTexture = new Texture("./res/textures/green_floor_64x64.png");
+
         twilightTexture = new Texture("./res/textures/twilight_sky_1200x400.png", 2.0f);
         waterTexture = new Texture("./res/textures/water_1500x1500.jpg");
 
@@ -116,6 +123,7 @@ public class MainGame implements GameComponent {
         textureMap.put(3, faceTexture);
         textureMap.put(4, grayBrickTexture);
         textureMap.put(5, eagleTexture);
+        textureMap.put(6, dudeTexture);
 
         screenImage = new BufferedImage(PROJECTION_PLANE_WIDTH, PROJECTION_PLANE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         screenImage.setAccelerationPriority(0); // Just to be sure
@@ -125,6 +133,11 @@ public class MainGame implements GameComponent {
     @Override
     public void input() {
         player.input();
+
+        if (GameKey.USE.isPressed()) {
+            System.out.println("Use key pressed");
+            map[5][1] = 0;
+        }
 
         if (GameKey.ESCAPE.isPressed()) {
             System.exit(0);
@@ -240,9 +253,9 @@ public class MainGame implements GameComponent {
                 mapX--;
             }
 
-            if (mapX < 0 || mapX >= MAP[0].length || mapY < 0 || mapY >= MAP.length) {
+            if (mapX < 0 || mapX >= map[0].length || mapY < 0 || mapY >= map.length) {
             } else {
-                Texture texture = textureMap.get(MAP[mapY][mapX]);
+                Texture texture = textureMap.get(map[mapY][mapX]);
                 if (texture == null) texture = checkerTexture_64;
                 drawWallSliceRectangle(castColumn, topOfWall, 1, ((bottomOfWall - topOfWall) + 1), shade, xOffset, texture);
             }
@@ -261,7 +274,7 @@ public class MainGame implements GameComponent {
     }
 
     private void drawPistol() {
-        int xOffset = (int) (PROJECTION_PLANE_WIDTH * 0.4f);
+        int xOffset = (int) (PROJECTION_PLANE_WIDTH * 0.35f);
         int yOffset = PROJECTION_PLANE_HEIGHT - pistolSprite.getHeight();
         drawSprite(pistolSprite, xOffset, yOffset);
     }
@@ -335,12 +348,12 @@ public class MainGame implements GameComponent {
             float cellY = yEnd / CUBE_SIZE;
 
             //Make sure the tile is within our map
-            if ((cellX < MAP[0].length) &&
-                    (cellY < MAP.length) &&
+            if ((cellX < map[0].length) &&
+                    (cellY < map.length) &&
                     cellX >= 0 && cellY >= 0) {
                 Texture texture = grayBrickTexture;
-                if (Math.floor(cellX) == 1 && Math.floor(cellY) == 1) texture = checkerDebugTexture;
-//                if ((Math.floor(cellX) == 8 || Math.floor(cellX) == 9) && !(Math.floor(cellY) == 4)) continue;
+
+                if (map[(int)Math.floor(cellY)][(int)Math.floor(cellX)] == -1) texture = greenFloorTexture;
 
                 // Find offset of tile and column in texture
                 float tileRow = (float) (Math.floor(yEnd % CUBE_SIZE) / CUBE_SIZE);
@@ -402,7 +415,7 @@ public class MainGame implements GameComponent {
         int xGrid = (int) Math.floor(xIntersection / CUBE_SIZE);
         int yGrid = (int) (rayPointsUp ? Math.floor(yIntersection / CUBE_SIZE) - 1 : Math.floor(yIntersection / CUBE_SIZE));
 
-        if (isWithinBounds(xGrid, yGrid) && MAP[yGrid][xGrid] == 0) {
+        if (isWithinBounds(xGrid, yGrid) && map[yGrid][xGrid] <= 0) {
             float yAdjust = rayPointsUp ? -CUBE_SIZE : CUBE_SIZE;
             float xAdjust = yAdjust / castTan;
 
@@ -413,7 +426,7 @@ public class MainGame implements GameComponent {
                 xGrid = (int) Math.floor(xIntersection / CUBE_SIZE);
                 yGrid = (int) (rayPointsUp ? Math.floor(yIntersection / CUBE_SIZE) - 1 : Math.floor(yIntersection / CUBE_SIZE));
 
-                if (isWithinBounds(xGrid, yGrid) && MAP[yGrid][xGrid] > 0) {
+                if (isWithinBounds(xGrid, yGrid) && map[yGrid][xGrid] > 0) {
                     break;
                 }
             }
@@ -433,7 +446,7 @@ public class MainGame implements GameComponent {
         int xGrid = (int) (rayPointsRight ? Math.floor(xIntersection / CUBE_SIZE) : Math.floor(xIntersection / CUBE_SIZE) - 1);
         int yGrid = (int) Math.floor(yIntersection / CUBE_SIZE);
 
-        if (isWithinBounds(xGrid, yGrid) && MAP[yGrid][xGrid] == 0) {
+        if (isWithinBounds(xGrid, yGrid) && map[yGrid][xGrid] <= 0) {
             float xAdjust = rayPointsRight ? CUBE_SIZE : -CUBE_SIZE;
             float yAdjust = xAdjust * castTan;
 
@@ -444,7 +457,7 @@ public class MainGame implements GameComponent {
                 xGrid = (int) (rayPointsRight ? Math.floor(xIntersection / CUBE_SIZE) : Math.floor(xIntersection / CUBE_SIZE) - 1);
                 yGrid = (int) Math.floor(yIntersection / CUBE_SIZE);
 
-                if (isWithinBounds(xGrid, yGrid) && MAP[yGrid][xGrid] > 0) {
+                if (isWithinBounds(xGrid, yGrid) && map[yGrid][xGrid] > 0) {
                     break;
                 }
             }
@@ -453,14 +466,14 @@ public class MainGame implements GameComponent {
     }
 
     private static boolean isWithinBounds(int xGrid, int yGrid) {
-        return !(xGrid < 0 || xGrid >= MAP[0].length || yGrid < 0 || yGrid >= MAP.length);
+        return !(xGrid < 0 || xGrid >= map[0].length || yGrid < 0 || yGrid >= map.length);
     }
 
     private void renderMiniMap(Graphics2D g2) {
         g2.setColor(Color.GRAY);
-        for (int y = 0; y < MAP.length; y++) {
-            for (int x = 0; x < MAP[0].length; x++) {
-                if (MAP[y][x] > 0) {
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[0].length; x++) {
+                if (map[y][x] > 0) {
                     g2.drawRect(x * CUBE_SIZE, y * CUBE_SIZE, CUBE_SIZE, CUBE_SIZE);
                 }
             }

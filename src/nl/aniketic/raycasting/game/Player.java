@@ -89,7 +89,6 @@ public class Player implements GameComponent {
             }
         }
 
-
         // Reset mouse position
         JFrame window = DisplayManager.getWindow();
         if (window == null) return;
@@ -173,7 +172,7 @@ public class Player implements GameComponent {
     }
 
     public boolean isWall(int x, int y) {
-        return MainGame.MAP[y / CUBE_SIZE][x / CUBE_SIZE] > 0;
+        return MainGame.map[y / CUBE_SIZE][x / CUBE_SIZE] > 0;
     }
 
     @Override
