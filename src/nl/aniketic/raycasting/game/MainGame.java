@@ -48,6 +48,24 @@ public class MainGame implements GameComponent {
             {1, 5, 1, 1, 1, 1, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1}
     };
 
+//    public static final int[][] MAP = {
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+//            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+//    };
+
     private Player player;
 
     private Texture checkerTexture_64;
@@ -65,6 +83,8 @@ public class MainGame implements GameComponent {
     private Texture twilightTexture;
     private Texture waterTexture;
 
+    private Sprite pistolSprite;
+
     private Map<Integer, Texture> textureMap;
 
     private BufferedImage screenImage;
@@ -73,20 +93,22 @@ public class MainGame implements GameComponent {
     public MainGame() {
         player = new Player(96.0f, 224.0f);
 
-        checkerTexture_64 = loadTexture("./res/textures/checker_brown_64x64.png", 1.0f);
-        checkerTexture_128 = loadTexture("./res/textures/checker_brown_128x128.png", 1.0f);
-        checkerDebugTexture = loadTexture("./res/textures/checker_brown_debug_64x64.png", 1.0f);
-        wallTexture = loadTexture("./res/textures/wall_64x64.png", 1.0f);
-        stoneTexture = loadTexture("./res/textures/stone_64x64.png", 1.0f);
-        skyTexture = loadTexture("./res/textures/sky.jpg", 2.0f);
+        checkerTexture_64 = new Texture("./res/textures/checker_brown_64x64.png", 1.0f);
+        checkerTexture_128 = new Texture("./res/textures/checker_brown_128x128.png", 1.0f);
+        checkerDebugTexture = new Texture("./res/textures/checker_brown_debug_64x64.png", 1.0f);
+        wallTexture = new Texture("./res/textures/wall_64x64.png", 1.0f);
+        stoneTexture = new Texture("./res/textures/stone_64x64.png", 1.0f);
+        skyTexture = new Texture("./res/textures/sky.jpg", 2.0f);
 
-        grayBrickTexture = loadTexture("./res/textures/gray_bricks_1024x1024.png");
-        mossyTexture = loadTexture("./res/textures/mossy_bricks_1024x1024.png");
-        faceTexture = loadTexture("./res/textures/face_bricks_1024x1024.png");
-        redBrickTexture = loadTexture("./res/textures/red_bricks_1024x1024.png");
-        eagleTexture = loadTexture("./res/textures/eagle_1024x1024.png");
-        twilightTexture = loadTexture("./res/textures/twilight_sky_1200x400.png", 2.0f);
-        waterTexture = loadTexture("./res/textures/water_1500x1500.jpg");
+        grayBrickTexture = new Texture("./res/textures/gray_bricks_1024x1024.png");
+        mossyTexture = new Texture("./res/textures/mossy_bricks_1024x1024.png");
+        faceTexture = new Texture("./res/textures/face_bricks_1024x1024.png");
+        redBrickTexture = new Texture("./res/textures/red_bricks_1024x1024.png");
+        eagleTexture = new Texture("./res/textures/eagle_1024x1024.png");
+        twilightTexture = new Texture("./res/textures/twilight_sky_1200x400.png", 2.0f);
+        waterTexture = new Texture("./res/textures/water_1500x1500.jpg");
+
+        pistolSprite = new Sprite("./res/textures/pistol.png", new Color(0.0f, 1.0f, 1.0f).getRGB(), 3.0f);
 
         textureMap = new HashMap<>();
         textureMap.put(1, redBrickTexture);
@@ -98,19 +120,6 @@ public class MainGame implements GameComponent {
         screenImage = new BufferedImage(PROJECTION_PLANE_WIDTH, PROJECTION_PLANE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         screenImage.setAccelerationPriority(0); // Just to be sure
         screenPixels = ((DataBufferInt) screenImage.getRaster().getDataBuffer()).getData();
-    }
-
-    private static Texture loadTexture(String filePath) {
-        BufferedImage skyImage = ImageUtil.loadImage(filePath);
-        int[] skyPixels = skyImage.getRGB(0, 0, skyImage.getWidth(), skyImage.getHeight(), null, 0, skyImage.getWidth());
-        return new Texture(skyImage.getWidth(), skyImage.getHeight(), skyPixels);
-    }
-
-    private static Texture loadTexture(String filePath, float scale) {
-        BufferedImage skyImage = ImageUtil.loadImage(filePath);
-        skyImage = ImageUtil.scaleImage(skyImage, scale);
-        int[] skyPixels = skyImage.getRGB(0, 0, skyImage.getWidth(), skyImage.getHeight(), null, 0, skyImage.getWidth());
-        return new Texture(skyImage.getWidth(), skyImage.getHeight(), skyPixels);
     }
 
     @Override
@@ -230,10 +239,13 @@ public class MainGame implements GameComponent {
             if (distanceV < distanceH && !(castArc < 90.0f || castArc >= 270.0f)) {
                 mapX--;
             }
-            Texture texture = textureMap.get(MAP[mapY][mapX]);
-            if (texture == null) texture = checkerTexture_64;
 
-            drawWallSliceRectangle(castColumn, topOfWall, 1, ((bottomOfWall - topOfWall) + 1), shade, xOffset, texture);
+            if (mapX < 0 || mapX >= MAP[0].length || mapY < 0 || mapY >= MAP.length) {
+            } else {
+                Texture texture = textureMap.get(MAP[mapY][mapX]);
+                if (texture == null) texture = checkerTexture_64;
+                drawWallSliceRectangle(castColumn, topOfWall, 1, ((bottomOfWall - topOfWall) + 1), shade, xOffset, texture);
+            }
             drawFloor(castArc, castColumn, bottomOfWall);
 
             // Increase the arc for the next iteration
@@ -243,7 +255,27 @@ public class MainGame implements GameComponent {
             }
         }
 
+        drawPistol();
+
         g2.drawImage(screenImage, 0, 0, PROJECTION_PLANE_WIDTH * 2, PROJECTION_PLANE_HEIGHT * 2, null);
+    }
+
+    private void drawPistol() {
+        int xOffset = (int) (PROJECTION_PLANE_WIDTH * 0.4f);
+        int yOffset = PROJECTION_PLANE_HEIGHT - pistolSprite.getHeight();
+        drawSprite(pistolSprite, xOffset, yOffset);
+    }
+
+    private void drawSprite(Sprite sprite, int xOffset, int yOffset) {
+        for (int y = 0; y < sprite.getHeight(); y++) {
+            for (int x = 0; x < sprite.getWidth(); x++) {
+                int pixelColor = sprite.getPixel(x, y);
+                if (pixelColor == sprite.getAlphaColor()) continue;
+                int screenX = x + xOffset;
+                int screenY = y + yOffset;
+                screenPixels[screenY * PROJECTION_PLANE_WIDTH + screenX] = pixelColor;
+            }
+        }
     }
 
     private void drawSky() {
@@ -337,6 +369,9 @@ public class MainGame implements GameComponent {
 
                 float tileRow = (float) sy / (float) CUBE_SIZE;
                 float tileColumn = (float) sx / (float) CUBE_SIZE;
+
+                if (tileRow < 0 || tileRow >= texture.getHeight() || tileColumn < 0 || tileColumn >= texture.getWidth())
+                    continue;
                 int rgb = texture.getPixel(tileColumn, tileRow);
                 Color c = applyShade(new Color(rgb), shade);
                 screenPixels[worldY * PROJECTION_PLANE_WIDTH + worldX] = c.getRGB();

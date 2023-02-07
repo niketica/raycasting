@@ -24,8 +24,8 @@ public class Player implements GameComponent {
 
     public float angle;
     public float speed = 3.0f;
-    public float rot_speed = 2.8f;
-    public float verticalLookSpeed = 14.0f;
+    public float rot_speed = 4.0f;
+    public float verticalLookSpeed = 18.0f;
     public float yPerspectiveOffset;
     public float standHeight = 32.0f;
     public float currentHeight = standHeight;

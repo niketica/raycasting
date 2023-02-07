@@ -2,40 +2,36 @@ package nl.aniketic.raycasting.game;
 
 import java.awt.image.BufferedImage;
 
-public class Texture {
+public class Sprite {
 
-    private int width;
-    private int height;
-    private int[] pixels;
+    private final int width;
+    private final int height;
+    private final int[] pixels;
+    private final int alphaColor;
 
-    public Texture(String filePath) {
+    public Sprite(String filePath, int alphaColor) {
         BufferedImage img = ImageUtil.loadImage(filePath);
         this.pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
         this.width = img.getWidth();
         this.height = img.getHeight();
+        this.alphaColor = alphaColor;
     }
-    public Texture(String filePath, float scale) {
+
+    public Sprite(String filePath, int alphaColor, float scale) {
         BufferedImage img = ImageUtil.loadImage(filePath);
         img = ImageUtil.scaleImage(img, scale);
         this.pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
         this.width = img.getWidth();
         this.height = img.getHeight();
+        this.alphaColor = alphaColor;
     }
 
     public int getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
     public int getHeight() {
         return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 
     public int[] getPixels() {
@@ -56,15 +52,7 @@ public class Texture {
         return pixels[y * width + x];
     }
 
-    public void setPixels(int[] pixels) {
-        this.pixels = pixels;
-    }
-
-    public void setPixel(int x, int y, int value) {
-        this.pixels[y * width + x] = value;
-    }
-
-    public void setPixel(int index, int value) {
-        this.pixels[index] = value;
+    public int getAlphaColor() {
+        return alphaColor;
     }
 }
